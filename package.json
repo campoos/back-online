@@ -3,6 +3,13 @@
     "start": "node app.js",
     "postinstall": "prisma generate"
   },
+  "engines": {
+    "node": "22.x"
+  },
+  "config": {
+    "PUPPETEER_PRODUCT": "chrome",
+    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "body-parser": "^2.2.1",

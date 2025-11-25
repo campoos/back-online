@@ -1,13 +1,43 @@
-# Node
-node_modules
+# Node modules
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # Environment variables
 .env
+.env.local
+.env.production
+.env.development
 
-# Prisma
-.prisma/
+# Logs
+logs
+*.log
+logs/*
+debug.log
+error.log
+*.pid
+*.seed
+*.pid.lock
 
-/generated/prisma
+# Build outputs
+dist/
+build/
+out/
+
+# Puppeteer/Chrome
+.chromium/
+.cache/
+.puppeteer/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/config
+.vscode/
+.idea/
+
+# Azure artifacts
+*.publishsettings
+*.azureconfig

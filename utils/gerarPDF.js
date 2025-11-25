@@ -50,26 +50,34 @@ async function gerarPDF(markdown, nomeBase = 'relatorio') {
   const fileName = `${nomeBase}_${Date.now()}.pdf`;
   const filePath = path.join(pastaPublic, fileName);
 
-  // Inicia Puppeteer (Chromium baixado pelo pacote)
-  // Em mac M1/M2 pode precisar de args extras — seguem args seguros.
+  // Azure usa o Chromium incluído no SO
+  const executablePath =
+    process.env.PUPPETEER_EXECUTABLE_PATH ||
+    '/usr/bin/chromium-browser';
+
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    defaultViewport: { width: 1200, height: 800 },
+    executablePath,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-gpu',
+      '--disable-dev-shm-usage'
+    ],
+    headless: true,
+    defaultViewport: { width: 1200, height: 800 }
   });
 
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
 
-    // Ajuste das opções do PDF conforme necessidade
     await page.pdf({
       path: filePath,
       format: 'A4',
       printBackground: true,
-      margin: { top: '20mm', right: '15mm', bottom: '20mm', left: '15mm' },
+      margin: { top: '20mm', right: '15mm', bottom: '20mm', left: '15mm' }
     });
 
-    // Retorna o caminho acessível (relativo ao server static /public)
     return `/public/pdf/${fileName}`;
   } finally {
     await browser.close();
@@ -78,4 +86,4 @@ async function gerarPDF(markdown, nomeBase = 'relatorio') {
 
 module.exports = {
   gerarPDF
-}
+};
