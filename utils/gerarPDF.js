@@ -5,22 +5,18 @@ const marked = require('marked');
 
 /**
  * Gera um PDF a partir de um texto Markdown.
- * @param {string} markdown - texto em Markdown (tabelas/formatos).
- * @param {string} nomeBase - nome base do arquivo (ex: 'relatorio_aluno')
- * @returns {Promise<string>} - caminho público relativo do PDF (ex: '/public/pdf/relatorio_xxx.pdf')
  */
 async function gerarPDF(markdown, nomeBase = 'relatorio') {
-  // Converte Markdown -> HTML
+  // Converter markdown em HTML
   const htmlBody = marked.parse(markdown || '');
 
-  // CSS simples para deixar as tabelas legíveis
   const css = `
     <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 24px; color: #111; }
+      body { font-family: Arial, Helvetica, sans-serif; padding: 24px; color: #111; }
       h1,h2,h3 { color: #7d53f3; }
       table { border-collapse: collapse; width: 100%; margin-bottom: 16px; }
       table, th, td { border: 1px solid #999; }
-      th, td { padding: 6px 8px; text-align: left; vertical-align: top; font-size: 12px; }
+      th, td { padding: 6px 8px; font-size: 12px; }
       pre { background: #f6f8fa; padding: 8px; overflow-x: auto; }
       code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; }
     </style>
@@ -43,28 +39,30 @@ async function gerarPDF(markdown, nomeBase = 'relatorio') {
     </html>
   `;
 
-  // Garante pasta public/pdf
+  // Criar pasta public/pdf se não existir
   const pastaPublic = path.join(__dirname, '../public/pdf');
   fs.mkdirSync(pastaPublic, { recursive: true });
 
   const fileName = `${nomeBase}_${Date.now()}.pdf`;
   const filePath = path.join(pastaPublic, fileName);
 
-  // Azure usa o Chromium incluído no SO
+  // 🔥 CAMINHO CORRETO NO AZURE APP SERVICE
   const executablePath =
     process.env.PUPPETEER_EXECUTABLE_PATH ||
-    '/usr/bin/chromium-browser';
+    '/usr/bin/google-chrome';
 
   const browser = await puppeteer.launch({
     executablePath,
+    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--disable-dev-shm-usage'
+      '--single-process',
+      '--no-zygote'
     ],
-    headless: true,
-    defaultViewport: { width: 1200, height: 800 }
+    defaultViewport: { width: 1280, height: 900 }
   });
 
   try {
@@ -84,6 +82,4 @@ async function gerarPDF(markdown, nomeBase = 'relatorio') {
   }
 }
 
-module.exports = {
-  gerarPDF
-};
+module.exports = { gerarPDF };

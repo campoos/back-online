@@ -4,11 +4,7 @@
     "postinstall": "prisma generate"
   },
   "engines": {
-    "node": "22.x"
-  },
-  "config": {
-    "PUPPETEER_PRODUCT": "chrome",
-    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+    "node": "20.x"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
