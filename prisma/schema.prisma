@@ -201,15 +201,22 @@ model tbl_recursos {
   id_recursos       Int                 @id @default(autoincrement())
   titulo            String?             @db.VarChar(45)
   descricao         String?             @db.VarChar(255)
+  link_criterio     String?             @db.VarChar(255)
   data_criacao      DateTime            @db.Date
   id_materia        Int
   id_professor      Int
+  id_turma          Int
+  id_semestre       Int
   tbl_recurso_aluno tbl_recurso_aluno[]
   tbl_materia       tbl_materia         @relation(fields: [id_materia], references: [id_materia], onDelete: Cascade, onUpdate: NoAction, map: "fk_recursos_materia")
   tbl_professor     tbl_professor       @relation(fields: [id_professor], references: [id_professor], onDelete: Cascade, onUpdate: NoAction, map: "fk_recursos_professor")
+  tbl_semestre      tbl_semestre        @relation(fields: [id_semestre], references: [id_semestre], onDelete: Cascade, onUpdate: NoAction, map: "fk_recursos_semestre")
+  tbl_turma         tbl_turma           @relation(fields: [id_turma], references: [id_turma], onDelete: Cascade, onUpdate: NoAction, map: "fk_recursos_turma")
 
   @@index([id_materia], map: "fk_recursos_materia")
   @@index([id_professor], map: "fk_recursos_professor")
+  @@index([id_semestre], map: "fk_recursos_semestre")
+  @@index([id_turma], map: "fk_recursos_turma")
 }
 
 model tbl_relatorio {
@@ -245,6 +252,7 @@ model tbl_semestre {
   tbl_frequencia     tbl_frequencia[]
   tbl_insights       tbl_insights[]
   tbl_nota           tbl_nota[]
+  tbl_recursos       tbl_recursos[]
   tbl_relatorio      tbl_relatorio[]
   tbl_semestre_turma tbl_semestre_turma[]
 }
@@ -266,6 +274,7 @@ model tbl_turma {
   tbl_aluno           tbl_aluno[]
   tbl_gestao_turma    tbl_gestao_turma[]
   tbl_insights        tbl_insights[]
+  tbl_recursos        tbl_recursos[]
   tbl_relatorio       tbl_relatorio[]
   tbl_semestre_turma  tbl_semestre_turma[]
   tbl_turma_professor tbl_turma_professor[]
